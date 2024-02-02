@@ -15,7 +15,7 @@
 
 int main(void)
 {
-    /* Replace with your application code */
+    /* Replace with your application code stinky winky*/
     while (1) 
     {
     }
