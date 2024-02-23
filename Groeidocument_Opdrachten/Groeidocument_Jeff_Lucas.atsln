@@ -7,6 +7,8 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Week_1", "Groeidocument_Jef
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Week_2", "Week_2\Week_2.cproj", "{3F868F75-6E5D-4D92-A006-C38957AEB69A}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ioisr", "ioisr\ioisr.cproj", "{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -21,6 +23,10 @@ Global
 		{3F868F75-6E5D-4D92-A006-C38957AEB69A}.Debug|AVR.Build.0 = Debug|AVR
 		{3F868F75-6E5D-4D92-A006-C38957AEB69A}.Release|AVR.ActiveCfg = Release|AVR
 		{3F868F75-6E5D-4D92-A006-C38957AEB69A}.Release|AVR.Build.0 = Release|AVR
+		{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}.Debug|AVR.ActiveCfg = Debug|AVR
+		{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}.Debug|AVR.Build.0 = Debug|AVR
+		{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}.Release|AVR.ActiveCfg = Release|AVR
+		{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

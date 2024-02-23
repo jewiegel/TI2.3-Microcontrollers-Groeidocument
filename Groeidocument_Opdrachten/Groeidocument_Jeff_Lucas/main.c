@@ -12,13 +12,13 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+void opdracht_b4(void);
+void opdrachtB5(void);
 
 int main(void)
 {
-    /* Replace with your application code stinky winky*/
-    while (1) 
-    {
-    }
+	opdracht_b4();	
+	return 1;
 }
 
 
@@ -32,20 +32,62 @@ void voorbeeld(void) {
 
 /*Maak een nieuwe applicatie die beurtelings de LED op PORTD, pin 7 (PORTD.7) en de LED op PORTD,
 pint 6 (PORTD.6) om de 500ms laat oplichten. Ontwikkel de applicatie in de simulator en programmeer daarna het board (gaat veel sneller!)*/
-void opdrachtB2(void) {
+void opdrachtB2(void) 
+{
+	DDRD = 0xFF;
 	
+	/* Replace with your application code*/
+	while (1)
+	{
+		PORTD = 0b01000000;
+		_delay_ms(500);
+		PORTD = 0x00;
+		_delay_ms(500);
+	}
 }
 
 /*Maak een applicatie die de led op PORTD.7 laat knipperen als drukknop PORTC.0 laag (0) is (ingedrukt) en stopt bij het loslaten van de drukknop.*/
-void opdrachtB3(void) {
+void opdrachtB3(void) 
+{
+	DDRD = 0xFF;
 	
+	while(1) 
+	{
+		if(PINC & 0b00000001) 
+		{
+			PORTD = 0b01000000;
+			_delay_ms(500);
+			PORTD = 0x00;
+			_delay_ms(500);
+		}
+		else 
+		{
+			PORTD = 0b00000000;
+		}
+	}
 }
 
 /*Implementeer een looplicht applicatie op de LED’s van PORTD. Tussen elke verandering van output zit 50ms (milliseconden). Hoe zou je dit kunnen meten? Om een eenvoudig
 looplicht te maken kun je gebruik maken van de shift operatoren in C (de >> en de <<). Dit heb je ook al gedaan in periode TI-1.1 op het GUI board.*/
-void opdrachtB4(void) {
+void opdracht_b4(void) 
+{
+	DDRD = 0xFF;
 	
+	while(1) 
+	{
+		PORTD = 0b10000000;
+		for (int i = 1; i <= 7; i++)
+		{
+			PORTD = (0b10000000 >> i);
+			_delay_ms(70);
+		}
+		_delay_ms(100);
+	}
 }
+
+//if ((0 != PINA & MASK) && 0 == (prev_pina & MASK)) {
+	//
+//}
 
 /*Een looplicht kun je implementeren met een schuifoperatie.
 Als het gewenste patroon niet zo eenvoudig is kun je e.a. met een grote if-then-else of switch-case constructie implementeren.
@@ -53,7 +95,8 @@ Dit levert, in het algemeen, slecht onderhoudbare en starre implementaties op.
 Beter is om een lichtpatroon te sturen vanuit een datastructuur, bijvoorbeeld een C array.
 Enig idee hoe dit moet? Zie ook het voorbeeld in de code repository.
 Implementeer een lichteffect met behulp van deze techniek. Bijvoorbeeld: YouTube */
-void opdrachtB5(void) {
+void opdrachtB5(void) 
+{
 	
 }
 
