@@ -12,22 +12,49 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
+typedef struct {
+	unsigned char data;
+	unsigned int delay;
+} PATTERN_STRUCT;
+
+PATTERN_STRUCT patterns[] = {
+		{0x00, 100}, {0x01, 100}, {0x02, 100}, {0x04, 100}, {0x10, 100}, {0x20, 100}, {0x40, 100}, {0x80, 100},
+		{0x00, 100},
+		{0xAA,  50}, {0x55,  50},
+		{0xAA,  50}, {0x55,  50},
+		{0xAA,  50}, {0x55,  50},
+		{0x00, 100},
+		{0x81, 100}, {0x42, 100}, {0x24, 100}, {0x18, 100}, {0x0F, 200}, {0xF0, 200}, {0x0F, 200}, {0xF0, 200},
+		{0x00, 0x00}
+	};
+	
+typedef enum {START, STATE_1, STATE_2, STATE_3, END} STATES;
+
+typedef struct 
+{
+	
+}
+	
+
+
+void wait( int ms ) 
+{
+	for (int i=0; i<ms; i++) 
+	{
+		_delay_ms(1);		// library function (max 30 ms at 8MHz)
+	}	
+}
+
 void opdracht_b4(void);
 void opdrachtB5(void);
+void opdrachtB6(void);
+void opdrachtB7a(void);
+void opdrachtB7b(void);
 
 int main(void)
 {
-	opdracht_b4();	
+	opdrachtB6();
 	return 1;
-}
-
-
-void voorbeeld(void) {
-	DDRD = 0xFF;
-	PORTD = 0b11111111;
-	_delay_ms(500);
-	PORTD = 0b00000000;
-	_delay_ms(500);
 }
 
 /*Maak een nieuwe applicatie die beurtelings de LED op PORTD, pin 7 (PORTD.7) en de LED op PORTD,
@@ -97,23 +124,52 @@ Enig idee hoe dit moet? Zie ook het voorbeeld in de code repository.
 Implementeer een lichteffect met behulp van deze techniek. Bijvoorbeeld: YouTube */
 void opdrachtB5(void) 
 {
-	
+	DDRD = 0xFF;
+	int index = 0;
+	while(1) 
+	{
+		while(patterns[index].delay != 0)
+		{
+			PORTD = patterns[index].data;
+			wait(patterns[index].delay);
+			index++;
+		}
+		index = 0;
+	}
 }
 
 /*Toestanden. Maak een applicatie die de led op PORTD.7 laat knipperen met een frequentie van circa 1Hz (1 keer per seconde). 
 Als nu PORTC.0 kort wordt ingedrukt gaat (en blijft) de led sneller knipperen (bijvoorbeeld 4Hz). 
 Bij nogmaals kort drukken gaat (en blijft) de led weer knipperen met een frequentie van 1Hz.*/
-void opdrachtB6(void) {
+void opdrachtB6(void) 
+{
+	DDRD = 0xFF;
+	
+	int mask = 0b10000000;
+	int prev_pina = PINA;
+	int i = 0;
+	
+	while(1) 
+	{
+		prev_pina = PINA;
+		if ((0 != PINA & mask) && 0 == (prev_pina & mask))
+		{
+			i++;
+			PORTD = (0b10000000 >> i);
+		}
+	}
 	
 }
 
 /*Zie breitspees*/
-void opdrachtB7a(void) {
+void opdrachtB7a(void) 
+{
 	
 }
 
 /*Zie breitspees*/
-void opdrachtB7b(void) {
+void opdrachtB7b(void) 
+{
 	
 }
 
