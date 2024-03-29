@@ -1,90 +1,52 @@
-/* ---------------------------------------------------------------------------
-** This software is in the public domain, furnished "as is", without technical
-** support, and with no warranty, express or implied, as to its usefulness for
-** any purpose.
-**
-** ioisr.c
-**
-** Beschrijving:	ISR on PORTD demonstrattion  
-** Target:			AVR mcu
-** Build:			avr-gcc -std=c99 -Wall -O3 -mmcu=atmega128 -D F_CPU=8000000UL -c ioisr.c
-**					avr-gcc -g -mmcu=atmega128 -o ioisr.elf ioisr.o
-**					avr-objcopy -O ihex ioisr.elf ioisr.hex 
-**					or type 'make'
-** Author: 			dkroeske@gmail.com
-** -------------------------------------------------------------------------*/
+/*
+ * timer_t2_ms.c
+ *
+ * Created: 21/02/2021 13:20:32
+ * Author : Etienne
+ */ 
 
 #define F_CPU 8e6
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
+#define BIT(x)			(1 << (x))
 
-/******************************************************************
-short:			Busy wait number of millisecs
-inputs:			int ms (Number of millisecs to busy wait)
-outputs:	
-notes:			Busy wait, not very accurate. Make sure (external)
-				clock value is set. This is used by _delay_ms inside
-				util/delay.h
-Version :    	DMK, Initial code
-*******************************************************************/
+// wait(): busy waiting for 'ms' millisecond
+// Used library: util/delay.h
 void wait( int ms ) {
-	for (int i=0; i<ms; i++) {
-		_delay_ms( 1 );		// library function (max 30 ms at 8MHz)
+	for (int tms=0; tms<ms; tms++) {
+		_delay_ms( 1 );			// library function (max 30 ms at 8MHz)
 	}
 }
 
-/*****************************************************************
-short:			ISR INT0
-inputs:
-outputs:
-notes:			Set PORTD.5
-Version :    	DMK, Initial code
-*******************************************************************/
-ISR( INT0_vect ) {
-	for (int i = 7; i < 0; i--)
-	{
-		PORTA = (1 << i);
+volatile int msCount = 0;
+
+void timer2Init( void ) {
+	OCR2 = 7811;				// Compare value of counter 2
+	TIMSK |= BIT(7);		// T2 compare match interrupt enable
+	sei();					// turn_on intr all
+	TCCR2 = 0b00111011;		// Initialize T2: timer, prescaler=1024, compare output disconnected,CTC,RUN
+}
+
+volatile int counter = 0;
+int intervals[2] = {500, 2000};
+
+ISR( TIMER2_COMP_vect ) {
+	msCount++;					// Increment ms counter
+	if ( msCount == intervals[counter % 2] ) {
+		counter++;
+		PORTC ^= BIT(0);		// Toggle bit 0 van PORTC
+		msCount = 0;			// Reset ms_count value
 	}
 }
 
-/******************************************************************
-short:			ISR INT1
-inputs:
-outputs:
-notes:			Clear PORTD.5
-Version :    	DMK, Initial code
-*******************************************************************/
-ISR( INT1_vect ) {
-		
-}
-
-/******************************************************************
-short:			main() loop, entry point of executable
-inputs:
-outputs:
-notes:			Slow background task after init ISR
-Version :    	DMK, Initial code
-*******************************************************************/
 int main( void ) {
-	// Init I/O
-	DDRD = 0xFF;			// PORTD(7:4) output, PORTD(3:0) input
-
-	// Init Interrupt hardware
-	EICRA |= 0x0B;			// INT1 falling edge, INT0 rising edge
-	EIMSK |= 0x03;			// Enable INT1 & INT0
-	
-	// Enable global interrupt system
-	//SREG = 0x80;			// Of direct via SREG of via wrapper
-	sei();
+	DDRC = 0xFF;				// set PORTC for output (toggle PC0)
+	timer2Init();
 
 	while (1) {
-		//PORTD = (1<<7);	// Toggle PORTD.7
-		wait(500);
+		// do something else
+		wait(10);			// every 10 ms (busy waiting
 	}
-
-	return 1;
 }
-
-

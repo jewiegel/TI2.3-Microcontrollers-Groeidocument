@@ -9,6 +9,12 @@ Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Week_2", "Week_2\Week_2.cpr
 EndProject
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "ioisr", "ioisr\ioisr.cproj", "{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}"
 EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Week_3", "Week_3\Week_3.cproj", "{F0E8DD5B-8FE5-46C2-93B9-5368DC134D94}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Week_4", "Week_4\Week_4.cproj", "{A3737A3D-CCE8-402D-AFA8-3048A0C256E9}"
+EndProject
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Week_5", "Week_5\Week_5.cproj", "{F7F8F7CD-2FAF-4599-912A-88CF4604BF79}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR
@@ -27,6 +33,18 @@ Global
 		{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}.Debug|AVR.Build.0 = Debug|AVR
 		{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}.Release|AVR.ActiveCfg = Release|AVR
 		{7C4E2A2A-674F-4658-AF9C-7171D9412DF1}.Release|AVR.Build.0 = Release|AVR
+		{F0E8DD5B-8FE5-46C2-93B9-5368DC134D94}.Debug|AVR.ActiveCfg = Debug|AVR
+		{F0E8DD5B-8FE5-46C2-93B9-5368DC134D94}.Debug|AVR.Build.0 = Debug|AVR
+		{F0E8DD5B-8FE5-46C2-93B9-5368DC134D94}.Release|AVR.ActiveCfg = Release|AVR
+		{F0E8DD5B-8FE5-46C2-93B9-5368DC134D94}.Release|AVR.Build.0 = Release|AVR
+		{A3737A3D-CCE8-402D-AFA8-3048A0C256E9}.Debug|AVR.ActiveCfg = Debug|AVR
+		{A3737A3D-CCE8-402D-AFA8-3048A0C256E9}.Debug|AVR.Build.0 = Debug|AVR
+		{A3737A3D-CCE8-402D-AFA8-3048A0C256E9}.Release|AVR.ActiveCfg = Release|AVR
+		{A3737A3D-CCE8-402D-AFA8-3048A0C256E9}.Release|AVR.Build.0 = Release|AVR
+		{F7F8F7CD-2FAF-4599-912A-88CF4604BF79}.Debug|AVR.ActiveCfg = Debug|AVR
+		{F7F8F7CD-2FAF-4599-912A-88CF4604BF79}.Debug|AVR.Build.0 = Debug|AVR
+		{F7F8F7CD-2FAF-4599-912A-88CF4604BF79}.Release|AVR.ActiveCfg = Release|AVR
+		{F7F8F7CD-2FAF-4599-912A-88CF4604BF79}.Release|AVR.Build.0 = Release|AVR
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

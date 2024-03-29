@@ -108,7 +108,7 @@ void opdracht_b4(void)
 			PORTD = (0b10000000 >> i);
 			_delay_ms(70);
 		}
-		_delay_ms(100);
+		_delay_ms(1000);
 	}
 }
 
