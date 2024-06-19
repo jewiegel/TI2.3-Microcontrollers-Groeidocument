@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
-    <ProjectGuid>{7c4e2a2a-674f-4658-af9c-7171d9412df1}</ProjectGuid>
+    <ProjectGuid>{a236ecfe-b098-43eb-a7c8-5ab32151950f}</ProjectGuid>
     <avrdevice>ATmega128</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>ioisr</AssemblyName>
-    <Name>ioisr</Name>
-    <RootNamespace>ioisr</RootNamespace>
+    <AssemblyName>Eindopdracht</AssemblyName>
+    <Name>Eindopdracht</Name>
+    <RootNamespace>Eindopdracht</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -122,9 +122,21 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="include\lcd.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\lcd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\uart.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="include" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

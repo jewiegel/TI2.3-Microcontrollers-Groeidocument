@@ -58,6 +58,7 @@ void lcd_clear() {
 
 void lcd_init() {
 	DDRA = 0xFF;
+	DDRC = 0xFF;
 	PORTC = 0x00;
 	PORTA = 0x00;
 
