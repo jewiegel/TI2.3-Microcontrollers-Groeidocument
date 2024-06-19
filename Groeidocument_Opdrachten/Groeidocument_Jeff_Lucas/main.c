@@ -89,7 +89,7 @@ void opdrachtB3(void)
 	}
 }
 
-/*Implementeer een looplicht applicatie op de LED’s van PORTD. Tussen elke verandering van output zit 50ms (milliseconden). Hoe zou je dit kunnen meten? Om een eenvoudig
+/*Implementeer een looplicht applicatie op de LEDï¿½s van PORTD. Tussen elke verandering van output zit 50ms (milliseconden). Hoe zou je dit kunnen meten? Om een eenvoudig
 looplicht te maken kun je gebruik maken van de shift operatoren in C (de >> en de <<). Dit heb je ook al gedaan in periode TI-1.1 op het GUI board.*/
 void opdracht_b4(void) 
 {
@@ -138,7 +138,7 @@ Als nu PORTC.0 kort wordt ingedrukt gaat (en blijft) de led sneller knipperen (b
 Bij nogmaals kort drukken gaat (en blijft) de led weer knipperen met een frequentie van 1Hz.*/
 void opdrachtB6(void) 
 {
-
+	
 }
 
 void opdrachtB7a(void) 
