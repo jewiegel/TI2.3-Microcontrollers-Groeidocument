@@ -4,7 +4,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>7.0</ProjectVersion>
     <ToolchainName>com.Atmel.AVRGCC8.C</ToolchainName>
-    <ProjectGuid>{f7f8f7cd-2faf-4599-912a-88cf4604bf79}</ProjectGuid>
+    <ProjectGuid>{a236ecfe-b098-43eb-a7c8-5ab32151950f}</ProjectGuid>
     <avrdevice>ATmega128</avrdevice>
     <avrdeviceseries>none</avrdeviceseries>
     <OutputType>Executable</OutputType>
@@ -12,9 +12,9 @@
     <OutputFileName>$(MSBuildProjectName)</OutputFileName>
     <OutputFileExtension>.elf</OutputFileExtension>
     <OutputDirectory>$(MSBuildProjectDirectory)\$(Configuration)</OutputDirectory>
-    <AssemblyName>Week_5</AssemblyName>
-    <Name>Week_5</Name>
-    <RootNamespace>Week_5</RootNamespace>
+    <AssemblyName>Eindopdracht</AssemblyName>
+    <Name>Eindopdracht</Name>
+    <RootNamespace>Eindopdracht</RootNamespace>
     <ToolchainFlavour>Native</ToolchainFlavour>
     <KeepTimersRunning>true</KeepTimersRunning>
     <OverrideVtor>false</OverrideVtor>
@@ -122,15 +122,21 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="lcd.c">
+    <Compile Include="include\lcd.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="lcd.h">
+    <Compile Include="include\lcd.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="include\uart.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="include" />
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>

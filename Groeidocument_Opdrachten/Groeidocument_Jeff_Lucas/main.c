@@ -30,13 +30,6 @@ PATTERN_STRUCT patterns[] = {
 	
 typedef enum {START, STATE_1, STATE_2, STATE_3, END} STATES;
 
-typedef struct 
-{
-	
-}
-	
-
-
 void wait( int ms ) 
 {
 	for (int i=0; i<ms; i++) 
@@ -45,6 +38,8 @@ void wait( int ms )
 	}	
 }
 
+void opdrachtB2(void);
+void opdrachtB3(void);
 void opdracht_b4(void);
 void opdrachtB5(void);
 void opdrachtB6(void);
@@ -53,7 +48,7 @@ void opdrachtB7b(void);
 
 int main(void)
 {
-	opdrachtB6();
+	opdrachtB5();
 	return 1;
 }
 
@@ -68,7 +63,7 @@ void opdrachtB2(void)
 	{
 		PORTD = 0b01000000;
 		_delay_ms(500);
-		PORTD = 0x00;
+		PORTD = 0b10000000;
 		_delay_ms(500);
 	}
 }
@@ -82,7 +77,7 @@ void opdrachtB3(void)
 	{
 		if(PINC & 0b00000001) 
 		{
-			PORTD = 0b01000000;
+			PORTD = 0b10000000;
 			_delay_ms(500);
 			PORTD = 0x00;
 			_delay_ms(500);
@@ -103,7 +98,7 @@ void opdracht_b4(void)
 	while(1) 
 	{
 		PORTD = 0b10000000;
-		for (int i = 1; i <= 7; i++)
+		for (int i = 0; i <= 7; i++)
 		{
 			PORTD = (0b10000000 >> i);
 			_delay_ms(70);
@@ -143,31 +138,14 @@ Als nu PORTC.0 kort wordt ingedrukt gaat (en blijft) de led sneller knipperen (b
 Bij nogmaals kort drukken gaat (en blijft) de led weer knipperen met een frequentie van 1Hz.*/
 void opdrachtB6(void) 
 {
-	DDRD = 0xFF;
-	
-	int mask = 0b10000000;
-	int prev_pina = PINA;
-	int i = 0;
-	
-	while(1) 
-	{
-		prev_pina = PINA;
-		if ((0 != PINA & mask) && 0 == (prev_pina & mask))
-		{
-			i++;
-			PORTD = (0b10000000 >> i);
-		}
-	}
-	
+
 }
 
-/*Zie breitspees*/
 void opdrachtB7a(void) 
 {
 	
 }
 
-/*Zie breitspees*/
 void opdrachtB7b(void) 
 {
 	

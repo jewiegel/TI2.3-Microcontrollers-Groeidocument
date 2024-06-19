@@ -8,6 +8,7 @@
 #define F_CPU 8e6
 #include <avr/io.h>
 #include <util/delay.h>
+#include "lcd.h"
 
 #define BIT(x)		( 1<<x )
 #define DDR_SPI		DDRB					// spi Data direction register
@@ -19,13 +20,7 @@
 
 // wait(): busy waiting for 'ms' millisecond
 // used library: util/delay.h
-void wait(int ms)
-{
-	for (int i=0; i<ms; i++)
-	{
-		_delay_ms(1);
-	}
-}
+
 
 void spi_masterInit(void)
 {
@@ -64,50 +59,91 @@ void spi_slaveSelect(unsigned char chipNumber)
 // Deselect device on pinnumer PORTB
 void spi_slaveDeSelect(unsigned char chipNumber)
 {
+
 	PORTB |= BIT(chipNumber);
+}
+
+void spi_writeWord (unsigned char adress, unsigned char data)
+{
+	spi_slaveSelect(0); // selecteer de display chip
+	spi_write(adress); // verstuur adres
+	spi_write(data); // verstuur data
+	spi_slaveDeSelect(0); // deselecteer de display chip
 }
 
 
 // Initialize the driver chip (type MAX 7219)
 void displayDriverInit()
 {
-	spi_slaveSelect(0);				// Select display chip (MAX7219)
-	spi_write(0x09);      			// Register 09: Decode Mode
-	spi_write(0xFF);				// 	-> 1's = BCD mode for all digits
-	spi_slaveDeSelect(0);			// Deselect display chip
-
-	spi_slaveSelect(0);				// Select dispaly chip
-	spi_write(0x0A);      			// Register 0A: Intensity
-	spi_write(0x04);    			//  -> Level 4 (in range [1..F])
-	spi_slaveDeSelect(0);			// Deselect display chip
-
-	spi_slaveSelect(0);				// Select display chip
-	spi_write(0x0B);  				// Register 0B: Scan-limit
-	spi_write(0x01);   				// 	-> 1 = Display digits 0..1
-	spi_slaveDeSelect(0);			// Deselect display chip
-
-	spi_slaveSelect(0);				// Select display chip
-	spi_write(0x0C); 				// Register 0B: Shutdown register
-	spi_write(0x01); 				// 	-> 1 = Normal operation
-	spi_slaveDeSelect(0);			// Deselect display chip
+	spi_writeWord(0x09, 0xFF);		// 09: Decode Mode -> 1's = BCD mode for all digits
+	spi_writeWord(0x0A, 0x0F);		// 0A: Helderheid -> level F (1 t/m F)
+	spi_writeWord(0x0B, 0x0F);		// 0B: Scan-limiet -> Digits 0 t/m 3
+	spi_writeWord(0x0C, 0x01);		// 0C: Afsluiten -> 1 = normaal
 }
 
 // Set display on ('normal operation')
 void displayOn()
 {
-	spi_slaveSelect(0);				// Select display chip
-	spi_write(0x0C); 				// Register 0B: Shutdown register
-	spi_write(0x01); 				// 	-> 1 = Normal operation
-	spi_slaveDeSelect(0);			// Deselect display chip
+	spi_writeWord(0x0C, 0x01); // Afsluiten -> 1 = normaal
 }
 
 // Set display off ('shut down')
 void displayOff()
 {
-	spi_slaveSelect(0);				// Select display chip
-	spi_write(0x0C); 				// Register 0B: Shutdown register
-	spi_write(0x00); 				// 	-> 1 = Normal operation
-	spi_slaveDeSelect(0);			// Deselect display chip
+	spi_writeWord(0x0C, 0x00); // Afsluiten -> 1 = normaal
+}
+
+void splitNumbers(int number, int digits[4])
+{
+	for (int i = 0; i < 4; i++)
+		digits[i] = 0; // Vul de gehele array met nullen.
+	
+	
+	if (number < 0)
+	{
+		number = -number; // Als number negatief is wordt het positief.
+		digits[0] = -1;
+	}
+	
+	int index = 3;
+	
+	while(number != 0)
+	{
+		digits[index] = number % 10;
+		number /= 10;
+		index--; 
+	}
+	
+}
+
+void writeNumber(int number)
+{
+	int digits[4];
+	splitNumbers(number, digits);
+	
+	if (digits[0] == -1)
+	{
+		spi_writeWord(4, '-');
+		char y = 4; // Op het segement display met switches zijn de getallen gespiegeld, vandaar de y.
+		for (char i =1; i < 4; i++)
+		{
+			spi_writeWord(i, digits[y - 1]); // i = adres, digits bevatten de waarde
+			y--;
+			wait(1000);
+		}
+	}
+	
+	else
+	{
+		char y = 4; // Op het segement display met switches zijn de getallen gespiegeld, vandaar de y.
+		for (char i =1; i < 5; i++)
+		{
+			spi_writeWord(i, digits[y - 1]); // i = adres, digits bevatten de waarde
+			y--;
+			wait(1000);
+		}
+	}
+	
 }
 
 int main()
@@ -118,27 +154,21 @@ int main()
 	displayDriverInit();            // Initialize display chip
 
 	// clear display (all zero's)
-	for (char i =1; i<=2; i++)
+	for (char i =1; i<=5; i++)
 	{
-		spi_slaveSelect(0); 		// Select display chip
-		spi_write(i);  				// 	digit adress: (digit place)
-		spi_write(0);				// 	digit value: 0
-		spi_slaveDeSelect(0);		// Deselect display chip
+		spi_writeWord(i, 0);		// i = adres, 0 = waarde
 	}
 	wait(1000);
 
-	// write 4-digit data
-	for (char i =1; i<=2; i++)
-	{
-		spi_slaveSelect(0);         // Select display chip
-		spi_write(i);         		// 	digit adress: (digit place)
-		spi_write(i);  		// 	digit value: i (= digit place)
-		spi_slaveDeSelect(0); 		// Deselect display chip
-		
-		wait(1000);
-	}
-	wait(1000);
+	//char y = 4; // Op het segement display met switches zijn de getallen gespiegeld, vandaar de y.
+	//for (char i =1; i < 5; i++)
+	//{
+		//spi_writeWord(y, i); // y = adres, i = waarde
+		//y--;
+		//wait(1000);
+	//}
 	
+	writeNumber(82);
+	wait(1000);
 	return (1);
 }
-

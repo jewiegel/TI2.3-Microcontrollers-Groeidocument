@@ -1,52 +1,72 @@
 /*
- * timer_t2_ms.c
- *
- * Created: 21/02/2021 13:20:32
- * Author : Etienne
- */ 
-
+ * Project name:
+     Demo4_4 : PWM with timer 1 Fast PWM mode at PORTB.7 = OCR1A
+ * Author: Avans-TI, JW
+ * Revision History: 
+     20101230: - initial release;
+ * Description:
+     This program gives an interrupt on each ms
+ * Test configuration:
+     MCU:             ATmega128
+     Dev.Board:       BIGAVR6
+     Oscillator:      External Clock 08.0000 MHz
+     Ext. Modules:    -
+     SW:              AVR-GCC
+ * NOTES:
+     - Turn ON the PORT LEDs at SW12.1 - SW12.8
+*/
 #define F_CPU 8e6
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 
 #define BIT(x)			(1 << (x))
+#define INTERVAL  		2273
+
+unsigned int sCount=0, minutes=0, hours=0;
 
 // wait(): busy waiting for 'ms' millisecond
 // Used library: util/delay.h
-void wait( int ms ) {
-	for (int tms=0; tms<ms; tms++) {
-		_delay_ms( 1 );			// library function (max 30 ms at 8MHz)
+void wait( int ms )
+{
+	for (int i=0; i<ms; i++)
+	{
+		_delay_ms( 1 );				// library function (max 30 ms at 8MHz)
 	}
 }
 
-volatile int msCount = 0;
-
-void timer2Init( void ) {
-	OCR2 = 7811;				// Compare value of counter 2
-	TIMSK |= BIT(7);		// T2 compare match interrupt enable
-	sei();					// turn_on intr all
-	TCCR2 = 0b00111011;		// Initialize T2: timer, prescaler=1024, compare output disconnected,CTC,RUN
+// Initialize timer 1: fast PWM at pin PORTB.6 (hundredth ms)
+void timer1Init( void )
+{
+	ICR1 = INTERVAL;				// TOP value for counting = INTERVAL*us
+	OCR1A = INTERVAL/2;				// compare value in between
+	TCCR1A = 0b10000010;			// timer, compare output at OC1A=PB5
+	TCCR1B = 0b00001011;			// fast PWM, TOP = ICR1, prescaler=8 (1MHz), RUN
 }
 
-volatile int counter = 0;
-int intervals[2] = {500, 2000};
 
-ISR( TIMER2_COMP_vect ) {
-	msCount++;					// Increment ms counter
-	if ( msCount == intervals[counter % 2] ) {
-		counter++;
-		PORTC ^= BIT(0);		// Toggle bit 0 van PORTC
-		msCount = 0;			// Reset ms_count value
-	}
-}
+// Main program: Counting on T1
+int main( void )
+{
+	DDRB = 0xFF;					// set PORTB for compare output 
+	DDRA = 0xFF;					// set PORTA for output in main program
+	timer1Init();					// it is running now!!
 
-int main( void ) {
-	DDRC = 0xFF;				// set PORTC for output (toggle PC0)
-	timer2Init();
-
-	while (1) {
+	while (1)
+	{
 		// do something else
-		wait(10);			// every 10 ms (busy waiting
+		wait(100);					// every 100 ms (busy waiting)
+		PORTA ^= BIT(7);			// toggle bit 7 PORTA
+		for (int i = 0; i <= 5255; i++)
+		{
+			OCR1A = i;
+			wait(10);
+		}
+		for (int i = 5255; i >= 0; i--)
+		{
+			OCR1A = i;
+			wait(10);
+		}
+		
 	}
 }

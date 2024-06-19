@@ -21,7 +21,7 @@ void opdracht_b2(void);
 
 int main(void)
 {
-	opdracht_b2();
+	opdracht_b1();
 	return 0;
 }
 

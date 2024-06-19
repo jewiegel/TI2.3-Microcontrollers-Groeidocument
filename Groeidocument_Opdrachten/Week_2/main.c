@@ -16,10 +16,9 @@ void opdrachtB4(void);
 void opdrachtB5(void);
 void nextRunningLight(void);
 
-
 int main(void)
 {
-	opdrachtB5();
+	opdrachtB4();
 	return 1;
 }
 
@@ -38,11 +37,11 @@ volatile int counter = 0;
 //{
 	//nextRunningLight();
 //}
-
-ISR(INT2_vect)
-{
-	nextRunningLight();
-}
+//
+//ISR(INT2_vect)
+//{
+	//nextRunningLight();
+//}
 
 void nextRunningLight(void)
 {
@@ -55,15 +54,14 @@ void nextRunningLight(void)
 		return;
 	}
 	PORTC = (0b10000000 >> counter);
-	_delay_ms(1);
+	_delay_ms(100);
 }
 
 void opdrachtB2(void) 
 {
 	DDRC = 0xFF;
 	
-	EICRA |= (1 << ISC11);
-	EICRA &= ~(1 << ISC10);
+	EICRA |= (1 << ISC11) | (1 << ISC10);
 	EICRA |= (1 << ISC21) | (1 << ISC20);
 	
 	EIMSK |= (1 << INT1); 
@@ -79,23 +77,26 @@ void opdrachtB2(void)
 
 #define MAX_SIZE 15
 volatile int segmentCounter = 0;
-int patterns[MAX_SIZE] = {0b00111111, 0b00110000, 0b01011011, 0b01111001, 0b01110100, 0b01101101, 0b01101111, 0b00111000, 0b01111111, 0b01111101,
-0b01111110, 0b01100111, 0b00001111, 0b01110011, 0b01001111};
+int patterns[MAX_SIZE] = {0b00111111, 0b00110000, 0b01011011, 0b01111001, 0b01110100, 
+						0b01101101, 0b01101111, 0b00111000, 0b01111111, 0b01111101,
+						0b01111110, 0b01100111, 0b00001111, 0b01110011, 0b01001111};
 
-ISR(INT0_vect)
-{
-	segmentCounter++;
-	
-	if (segmentCounter >= 20) { segmentCounter = 0; }
-	
-	display(segmentCounter);
-}
-
-ISR(INT1_vect) 
-{	
-	segmentCounter--;
-	display(segmentCounter);
-}
+//ISR(INT0_vect)
+//{
+	//segmentCounter++;
+	//
+	//if (segmentCounter >= 20) { segmentCounter = 0; }
+	//
+	//display(segmentCounter);
+	//_delay_ms(100);
+//}
+//
+//ISR(INT1_vect)
+//{
+	//segmentCounter--;
+	//display(segmentCounter);
+	//_delay_ms(100);
+//}
 
 /* Implementeer een functie waarmee een 7 segment display kan worden aangestuurd. */
 void opdrachtB3(void) 
@@ -106,12 +107,13 @@ void opdrachtB3(void)
 	EIMSK |= (1 << INT1);
 	sei();
 	
+	DDRB = 0xFF;
 	PORTB = 0xFF;
 	display(0);
 	
 	while(1) 
 	{
-		
+		_delay_ms(100);
 	}
 }
 
@@ -124,10 +126,39 @@ void display(int number)
 	else PORTB = patterns[number];
 }
 
+typedef struct {
+	unsigned char data;
+	unsigned int delay;
+} PATTERN_STRUCT;
+
+PATTERN_STRUCT segment_pattern[23] = 
+{
+	{0x80, 150}, {0x00, 150},
+	{0x80, 150}, {0x00, 150},
+	{0x01, 150}, {0x02, 150}, {0x40, 150}, {0x20, 150},
+	{0x01, 150}, {0x02, 150}, {0x40, 150}, {0x20, 150},
+	{0x00, 150},
+	{0x01, 150}, {0x03, 150}, {0x43, 150}, {0x63, 150},
+	{0x01, 150}, {0x03, 150}, {0x43, 150}, {0x63, 150},
+	{0x00, 150},
+	{0xFF, 0}
+};
+
 
 void opdrachtB4(void) 
 {
-	
+	DDRB = 0xFF;
+	int index = 0;
+	while (1) 
+	{
+		while(segment_pattern[index].delay != 0) 
+		{
+			PORTB = segment_pattern[index].data;
+			wait(segment_pattern[index].delay);
+			index++;
+		}
+		index = 0;
+	}
 }
 
 void opdrachtB5(void) 

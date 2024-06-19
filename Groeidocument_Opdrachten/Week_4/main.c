@@ -25,8 +25,8 @@ int main(void)
 
 void init_adc()
 {
-	ADMUX = 0b11100011;			// AREF=2.56V, result left adjusted, channel3 at pin PF3
-	ADCSRA = 0b10000110;		// ADC-enable, no interrupt, no start, no free running, division by 64
+	ADMUX = 0b01100001;			// AREF=VCC, result left adjusted, channel1 at pin PF1
+	ADCSRA = 0b11100101;		// ADC-enable, no interrupt, start, free running, division by 64
 }
 
 /*Laat de 10 bits AD-waarde van kanaal 1 op de led’s van Poort A en B zien. Bij Vin=0V zijn alle led’s uit, bij Vin = Vref zijn alle leds aan!*/
@@ -43,13 +43,19 @@ void opdracht_b2(void)
 	}
 }
 
+void init_adc2(void)
+{
+	ADMUX = 0b01100011;			
+	ADCSRA = 0b10000110;
+}
+
 /*Verander het programma (voor kanaal 3 en voor 8 bits) zodat het alleen een AD-conversie uitvoert als jij dat wilt, dus op aanvraag. 
 Maak daarvoor in main() een eindeloze lus met een wachtfunctie en een start voor de ADC.*/
 void opdracht_b3(void)
 {
 	DDRF = 0x00;				// set PORTF for input (ADC)
 	DDRA = 0xFF;				// set PORTA for output
-	init_adc();					// initialize ADC
+	init_adc2();					// initialize ADC
 
 	while (1)
 	{
@@ -64,12 +70,11 @@ void opdracht_b4(void)
 {
 	DDRF = 0x00;				// set PORTF for input (ADC)
 	DDRA = 0xFF;				// set PORTA for output
-	init_adc();					// initialize ADC
+	init_adc2();					// initialize ADC
 	
 	lcd_init();
 	lcd_clear();
 	lcd_set_cursor(1);
-	display_text_lcd("borek");
 	char str[20];
 	while (1)
 	{
