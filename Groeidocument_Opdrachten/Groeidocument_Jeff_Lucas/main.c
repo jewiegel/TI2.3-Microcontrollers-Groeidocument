@@ -48,7 +48,7 @@ void opdrachtB7b(void);
 
 int main(void)
 {
-	opdrachtB5();
+	opdrachtB6();
 	return 1;
 }
 
@@ -138,12 +138,137 @@ Als nu PORTC.0 kort wordt ingedrukt gaat (en blijft) de led sneller knipperen (b
 Bij nogmaals kort drukken gaat (en blijft) de led weer knipperen met een frequentie van 1Hz.*/
 void opdrachtB6(void) 
 {
-	
+	DDRD = 0xFF;
+	int blink_frequency = 1; // 1 for 1Hz, 4 for 4Hz
+
+	while (1) 
+	{
+		if (!(PINC & 0b00000001)) 
+		{
+			_delay_ms(50);
+			if (!(PINC & 0b00000001)) 
+			{
+				// Toggle frequency state
+				if (blink_frequency == 1) 
+					blink_frequency = 4;
+				
+				else 
+					blink_frequency = 1;
+				
+				
+				while (!(PINC & 0b00000001)) 
+					_delay_ms(50);
+			}
+		}
+
+		// Toggle LED
+		PORTD ^= 0b10000000;
+
+		// Delay based on the current blink frequency
+		if (blink_frequency == 1) 
+			_delay_ms(500); // 500ms on, 500ms off for 1Hz
+		
+		else 	
+			_delay_ms(125); // 125ms on, 125ms off for 4Hz
+	}
 }
+
+
+
+typedef enum { D7, D6, D5 } ENUM_EVENTS;
+typedef enum { START, STATE_1, STATE_2, STATE_3, END } ENUM_STATES;
+/* Define fsm transition */
+typedef struct 
+{
+	void (*finit)(void);
+	void (*fbody)(void);
+	void (*fexit)(void);
+	ENUM_STATES nextState;
+} STATE_TRANSITION_STRUCT;
+
+void handleEvent(ENUM_EVENTS event)
+{
+	// Call EXIT function old state
+	if( fsm[state][event].fexit != NULL) {
+		fsm[state][event].fexit() ;
+	}
+	
+	// Set new state, -1 means 
+	state = fsm[state][event].nextState;
+
+	// Call INIT function
+	if( fsm[state][event].finit != NULL) {
+		fsm[state][event].finit() ;
+	}
+
+	// Call BODY function
+	if( fsm[state][event].fbody != NULL) {
+		fsm[state][event].fbody() ;
+	}
+}
+
+//
+// State S1
+//
+void s1(void){
+	printf("s1\n");
+}
+
+//
+// State S2
+//
+void s2(void){
+	printf("s2\n");
+}
+
+//
+// State S3
+//
+void s3(void){	
+	printf("s3\n");
+}
+
+//
+// State Start
+//
+void start(void){
+	printf("start\n");
+}
+
+//
+// State Stop
+//
+void end(void){	
+	printf("end\n");
+}
+
+
+STATE_TRANSITION_STRUCT fsm[5][3] = 
+{
+	{ {s1,   NULL,  NULL, START}, 	{NULL, s1, NULL, STATE_1},		{NULL, s2, NULL, STATE_2} },
+	{ {NULL, start, NULL, START},	{NULL, NULL, NULL, STATE_1},	{NULL, s2, NULL, STATE_2} },
+	{ {NULL, start, NULL, START}, 	{NULL, s1, NULL, STATE_1}, 		{NULL, s3, NULL, STATE_3} },
+	{ {NULL, NULL,  NULL, START},	{NULL, end, NULL, END}, 		{NULL, end, NULL, END} },
+	{ {NULL, start, NULL, START},	{NULL, end, NULL, END}, 		{NULL, end, NULL, END} }
+};
+
+// State holder
+ENUM_STATES state = START;
 
 void opdrachtB7a(void) 
 {
+	DDRD = 0b00001111;			// Pins PORTD<7:4> input, PORTD<3:0)
+	// output
 	
+	// Test
+	handleEvent(D6);
+	handleEvent(D5);
+	handleEvent(D5);
+
+	// wait forever
+	while (1)
+	{
+	}
 }
 
 void opdrachtB7b(void) 
