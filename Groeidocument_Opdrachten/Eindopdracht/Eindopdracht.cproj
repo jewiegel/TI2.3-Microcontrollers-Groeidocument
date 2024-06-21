@@ -128,9 +128,6 @@
     <Compile Include="include\lcd.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="include\uart.c">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
